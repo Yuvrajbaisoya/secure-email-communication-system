@@ -5,7 +5,7 @@
 The project includes **two independent kinds of evidence**:
 
 1. **Mac user terminal logs** for OpenPGP ([T-PGP-01](evidence/T-PGP-01/EVIDENCE.md)) and S/MIME ([T-SMIME-01](evidence/T-SMIME-01/EVIDENCE.md)).
-2. **GitHub Actions runner logs** ([successful run](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933)) for 37 unit tests, 9 integrated offline checks and the two cryptographic shell labs. Authentication, MFA and gateway/DLP evidence links below point to this CI execution.
+2. **GitHub Actions runner logs** ([successful run](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389957335)) for 37 unit tests, 9 integrated offline checks and the two cryptographic shell labs. Authentication, MFA and gateway/DLP evidence links below point to this CI execution.
 
 These are not third-party mail service tests and do not prove production enforcement.
 

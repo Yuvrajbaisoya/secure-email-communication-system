@@ -27,7 +27,7 @@
 | DLP | Detect synthetic markers on external outbound messages; flag opaque encrypted mail | **PASS** — CI | No provider or endpoint DLP deployment |
 | Policies and training | Proposed controls, governance, quiz and incident workflow | **Written** | Approval and training delivery not verified |
 
-**Test evidence:** [GitHub Actions run — 37/37 unit tests, 9/9 integrated checks, OpenPGP and S/MIME jobs PASS](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933). This result was measured on GitHub's Ubuntu runner, not on production infrastructure. See [evidence register](practical/test-plan.md).
+**Test evidence:** [GitHub Actions run — 37/37 unit tests, 9/9 integrated checks, OpenPGP and S/MIME jobs PASS](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389957335). This result was measured on GitHub's Ubuntu runner, not on production infrastructure. See [evidence register](practical/test-plan.md).
 
 ## Architecture
 

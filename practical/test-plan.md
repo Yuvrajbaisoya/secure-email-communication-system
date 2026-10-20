@@ -1,7 +1,7 @@
 # Evidence Register and Test Plan
 
 **Snapshot:** 20 October 2026  
-**Independent CI evidence:** [Offline email security labs — 37/37 tests, 9/9 integrated checks, two crypto demos PASS](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933)  
+**Independent CI evidence:** [Offline email security labs — 37/37 tests, 9/9 integrated checks, two crypto demos PASS](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389957335)  
 **Scope:** Synthetic, offline and authorized GitHub CI execution only.
 
 | ID | Control / expected behavior | Evidence | Lab result | Live deployment |
@@ -9,7 +9,7 @@
 | T-HASH-01 | Modified sample message produces different SHA-256 | [Hash fixture report](evidence/T-HASH-01/EVIDENCE.md) | PASS (synthetic file test) | N/A |
 | T01 | Disposable OpenPGP signing/encryption key generation | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS | Not deployed |
 | T02 | OpenPGP encrypted message roundtrip | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS | Not deployed |
-| T03 | OpenPGP signature verifies | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS for valid signature; deliberate tamper/revocation test remains open | Not deployed |
+| T03 | OpenPGP signature verifies | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS for valid signature and deliberately tampered-message rejection; revocation test remains open | Not deployed |
 | T04 | S/MIME signing, encrypting, verifying and decrypting | [T-SMIME-01](evidence/T-SMIME-01/EVIDENCE.md) | PASS | Not deployed |
 | T05 | SPF permitted/denied test-sender IP | [T-AUTH-01](evidence/T-AUTH-01/EVIDENCE.md) | PASS in bounded offline evaluator | No actual DNS |
 | T06 | DKIM RSA signature checks; tampered header/body rejected | [T-AUTH-01](evidence/T-AUTH-01/EVIDENCE.md) | PASS in fixed-format lab | No actual DNS/MTA |

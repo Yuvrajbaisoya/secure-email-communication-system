@@ -10,7 +10,7 @@
 
 Modern organizational email must withstand account compromise, sender-domain spoofing, phishing, malicious attachments, message interception and accidental disclosure. This research project develops a layered reference architecture and demonstrates selected controls in a reproducible offline laboratory. Controls span OpenPGP and S/MIME cryptography, SHA-256, SPF/DKIM/DMARC, TOTP-based multifactor access checks, secure-email-gateway policy decisions and Data Loss Prevention (DLP) logic.
 
-Implementation code, synthetic fixtures, negative security tests and governance deliverables are versioned in GitHub. The independently recorded [GitHub Actions run](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933) completed **37/37 unit tests**, **9/9 integrated offline checks**, and both OpenPGP and S/MIME shell labs. Earlier successful Mac terminal demonstrations for OpenPGP and S/MIME are separately documented. **These results do not constitute a production rollout or live domain/mailbox verification.**
+Implementation code, synthetic fixtures, negative security tests and governance deliverables are versioned in GitHub. The independently recorded [GitHub Actions run](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389957335) completed **37/37 unit tests**, **9/9 integrated offline checks**, and both OpenPGP and S/MIME shell labs. Earlier successful Mac terminal demonstrations for OpenPGP and S/MIME are separately documented. **These results do not constitute a production rollout or live domain/mailbox verification.**
 
 ## 1. Background and objectives
 
@@ -34,7 +34,7 @@ E2EE and centralized gateway DLP create a visibility trade-off. The proposed res
 
 ### 4.1 OpenPGP
 
-`practical/openpgp_lab.sh` creates temporary Alice and Bob keys, signs a synthetic message, encrypts it for Bob, decrypts it, compares plaintext and checks GnuPG signature markers. A macOS GPG agent socket-path problem was corrected, and the user reported an exit-code-0 successful run. The same shell test subsequently passed in GitHub Actions. See [T-PGP-01](../practical/evidence/T-PGP-01/EVIDENCE.md).
+`practical/openpgp_lab.sh` creates temporary Alice and Bob keys, signs a synthetic message, encrypts it for Bob, decrypts it, compares plaintext and checks GnuPG signature markers. A macOS GPG agent socket-path problem was corrected, and the user reported an exit-code-0 successful run. The shell test passed in GitHub Actions; an additional later CI execution also verified a detached-signature tampering attempt returned GnuPG `BADSIG`. See [T-PGP-01](../practical/evidence/T-PGP-01/EVIDENCE.md).
 
 ### 4.2 S/MIME
 
@@ -64,7 +64,7 @@ E2EE and centralized gateway DLP create a visibility trade-off. The proposed res
 
 | Verification | Execution evidence | Result |
 |---|---|---|
-| Security unit tests | GitHub Actions run 39389041933 | **37/37 PASS** |
+| Security unit tests | GitHub Actions run 39389957335 | **37/37 PASS** |
 | Synthetic integrated checks | Same CI run | **9/9 PASS** |
 | OpenPGP isolated sign/encrypt/decrypt | Mac terminal + CI | **PASS** |
 | S/MIME isolated sign/encrypt/decrypt | Mac terminal + CI | **PASS** |

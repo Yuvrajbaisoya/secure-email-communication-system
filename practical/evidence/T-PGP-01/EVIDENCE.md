@@ -50,3 +50,15 @@ This evidence is based on **terminal output shared by the user**, not an indepen
 bash practical/openpgp_lab.sh
 echo "Exit code: $?"
 ```
+
+## Additional independently executed negative signature test
+
+On 20 October 2026, the revised lab generated a detached signature, modified the signed plaintext and required GnuPG to report `BADSIG`. [GitHub Actions run 39389957335](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389957335) completed with **success**, including:
+
+```text
+PASS: Bob decrypted the encrypted message; plaintext matched.
+PASS: Alice's OpenPGP signature verified.
+PASS: Tampering was detected; modified message signature rejected.
+```
+
+This tamper-rejection evidence is from the GitHub-hosted Linux CI runner, **not** the earlier Mac user transcript. Key revocation and separate-machine recipient key isolation remain untested.
