@@ -1,0 +1,2 @@
+# Only non-stdlib dependency: RSA signing and verification for offline DKIM lab.
+cryptography>=44,<48

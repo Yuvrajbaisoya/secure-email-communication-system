@@ -1,0 +1,20 @@
+# Python runtime and local tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+# Credentials and cryptographic secrets: NEVER commit real keys
+*.key
+*.p12
+*.pfx
+*.pem
+*.asc
+*.gpg
+*.kdbx
+id_rsa*
+# Local ephemeral lab artifacts
+lab-output/
+.DS_Store

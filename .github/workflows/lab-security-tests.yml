@@ -1,0 +1,35 @@
+name: Offline email security labs
+on:
+  push:
+    paths:
+      - "secure_email_lab/**"
+      - "tests/**"
+      - "practical/run_labs.py"
+      - "practical/openpgp_lab.sh"
+      - "practical/smime_lab.sh"
+      - "requirements.txt"
+      - ".github/workflows/lab-security-tests.yml"
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-labs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Install lab dependency
+        run: python -m pip install -r requirements.txt
+      - name: Run negative and positive security tests
+        run: python -m unittest discover -s tests -v
+      - name: Execute integrated synthetic lab
+        run: python -m practical.run_labs
+      - name: Reproduce isolated GnuPG OpenPGP lab
+        run: bash practical/openpgp_lab.sh
+      - name: Reproduce isolated OpenSSL S/MIME lab
+        run: bash practical/smime_lab.sh
