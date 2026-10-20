@@ -6,10 +6,10 @@ LAB="$(mktemp -d /tmp/pgplab.XXXXXX)"
 trap 'rm -rf "$LAB"' EXIT
 export GNUPGHOME="$LAB/g"
 mkdir -m 700 "$GNUPGHOME"
-# Keep socket paths short on macOS, then launch the agent explicitly.
-gpgconf --launch gpg-agent || fail "Could not start gpg-agent; check macOS permissions and socket path"
 step() { printf '\n==> %s\n' "$1"; }
 fail() { echo "ERROR: $1" >&2; exit 1; }
+# Keep socket paths short on macOS, then launch the agent explicitly.
+gpgconf --launch gpg-agent || fail "Could not start gpg-agent; check macOS permissions and socket path"
 step "Generating Alice's disposable signing key"
 gpg --batch --pinentry-mode loopback --passphrase '' --quick-generate-key "Alice Lab <alice@example.test>" ed25519 sign 1d || fail "Alice key generation failed"
 step "Generating Bob's disposable encryption key"
@@ -24,4 +24,14 @@ grep -q '\[GNUPG:\] GOODSIG ' "$LAB/decrypt.log" || fail "GOODSIG missing"
 grep -q '\[GNUPG:\] VALIDSIG ' "$LAB/decrypt.log" || fail "VALIDSIG missing"
 echo "PASS: Bob decrypted the encrypted message; plaintext matched."
 echo "PASS: Alice's OpenPGP signature verified."
+step "Checking that a modified message fails signature verification"
+gpg --batch --yes --armor --local-user alice@example.test --detach-sign \
+  --output "$LAB/detached.sig.asc" "$LAB/message.txt" || fail "Detached signature generation failed"
+cp "$LAB/message.txt" "$LAB/modified.txt"
+printf 'Unauthorized modification\n' >> "$LAB/modified.txt"
+if gpg --batch --yes --status-fd 2 --verify "$LAB/detached.sig.asc" "$LAB/modified.txt" >"$LAB/tamper.log" 2>&1; then
+  fail "Tampered message unexpectedly verified"
+fi
+grep -q '\[GNUPG:\] BADSIG ' "$LAB/tamper.log" || { cat "$LAB/tamper.log" >&2; fail "BADSIG missing for tampered message"; }
+echo "PASS: Tampering was detected; modified message signature rejected."
 echo "NOTE: Disposable test keys and ciphertext were deleted on exit."
