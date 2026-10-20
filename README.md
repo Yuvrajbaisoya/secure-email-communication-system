@@ -11,7 +11,7 @@ Email remains the primary communication vector for modern organizations, making 
 
 This project focuses on designing and implementing a robust, defense-in-depth secure email communication system for a global consulting organization. The proposed architecture leverages multiple layers of security to protect the **confidentiality, integrity, and authenticity** of organizational communications. 
 
-**Core Security Controls Implemented:**
+**Security Controls in Scope (implementation and verification pending):**
 *   **Encryption & Signatures:** End-to-end encryption (PGP & S/MIME), digital signatures, and cryptographic hashing.
 *   **Authentication & Access:** Multi-Factor Authentication (MFA) and granular authorization policies.
 *   **Perimeter Defenses:** Secure Email Gateway (SEG) with advanced spam, phishing, and malware filtering.
@@ -48,7 +48,7 @@ To ensure a structured implementation, the project objectives are categorized in
 
 ## 3. Security Requirements
 
-The system is engineered to guarantee the following core security principles:
+The proposed system is designed to support the following security principles; effectiveness must be validated in the practical lab:
 
 *   **Confidentiality:** Ensures only explicitly authorized recipients can decrypt and read sensitive email content.
 *   **Integrity:** Utilizes cryptographic hashing to ensure email content remains unaltered in transit.
@@ -110,3 +110,24 @@ The architecture utilizes a defense-in-depth strategy, filtering traffic through
                                         │
                                         ▼
                              [ Authorized Employee ]
+
+
+---
+
+## 6. Project Progress and Evidence
+
+> **Status:** Architecture proposal drafted; practical deployment and test evidence are pending. Do not interpret the scope below as verified production implementation.
+
+- [x] Initial project overview and proposed architecture
+- [x] [Sample infrastructure assessment plan](docs/infrastructure-assessment.md)
+- [x] [Practical test and evidence plan](practical/test-plan.md)
+- [ ] Run and document OpenPGP and S/MIME tests
+- [ ] Validate SPF, DKIM and DMARC on an authorized test domain
+- [ ] Verify MFA and digital signatures
+- [ ] Deploy and test gateway and DLP in a controlled lab
+- [ ] Complete policies, employee training materials and compliance mapping
+- [ ] Capture redacted evidence and prepare submission package
+
+**Submission:** The original project brief specifies 11 October 2026; confirm late-submission arrangements with First Quadrant Labs and the BIA LMS.
+
+**Security note:** Never commit private keys, passwords, access tokens, customer messages, or sensitive personal data. Use synthetic test messages and explicitly mark simulated controls.
