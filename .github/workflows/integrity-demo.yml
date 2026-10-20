@@ -1,0 +1,20 @@
+name: Validate offline integrity demo
+on:
+  push:
+    paths:
+      - "practical/integrity_demo.py"
+      - ".github/workflows/integrity-demo.yml"
+  pull_request:
+    paths:
+      - "practical/integrity_demo.py"
+      - ".github/workflows/integrity-demo.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline integrity demonstration
+        run: python3 practical/integrity_demo.py
