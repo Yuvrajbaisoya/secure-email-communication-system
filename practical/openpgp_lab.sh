@@ -2,10 +2,12 @@
 set -euo pipefail
 # Disposable synthetic OpenPGP lab. No private key material should be committed.
 command -v gpg >/dev/null || { echo "ERROR: GnuPG is not installed"; exit 1; }
-LAB="$(mktemp -d "${TMPDIR:-/tmp}/secure-email-openpgp.XXXXXX")"
+LAB="$(mktemp -d /tmp/pgplab.XXXXXX)"
 trap 'rm -rf "$LAB"' EXIT
-export GNUPGHOME="$LAB/gnupg"
+export GNUPGHOME="$LAB/g"
 mkdir -m 700 "$GNUPGHOME"
+# Keep socket paths short on macOS, then launch the agent explicitly.
+gpgconf --launch gpg-agent || fail "Could not start gpg-agent; check macOS permissions and socket path"
 step() { printf '\n==> %s\n' "$1"; }
 fail() { echo "ERROR: $1" >&2; exit 1; }
 step "Generating Alice's disposable signing key"
