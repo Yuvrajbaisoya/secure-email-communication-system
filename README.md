@@ -31,7 +31,7 @@
 
 ## Architecture
 
-\`\`\`mermaid
+```mermaid
 flowchart LR
   ext["External email"] --> mx["Owned-domain MX / mail service"]
   mx --> auth["SPF · DKIM · DMARC receiver checks"]
@@ -44,7 +44,7 @@ flowchart LR
   class --> outbound["Approved outbound sending"]
   seg --> audit["Redacted audit / alerting"]
   mailbox --> audit
-\`\`\`
+```
 
 **Trust boundary:** SPF/DKIM/DMARC defend the domain and transport identity, not the human author. TLS is hop protection, not end-to-end encryption. A gateway generally cannot inspect an OpenPGP/S/MIME-encrypted body; DLP must act at the endpoint or before encryption.
 
@@ -52,7 +52,7 @@ flowchart LR
 
 Requirements: **Python 3.12+**, **GnuPG 2.x** for OpenPGP, **OpenSSL 3.x** for S/MIME, and only synthetic identities/data. On macOS, install GnuPG and Homebrew OpenSSL via Homebrew. The S/MIME script automatically prefers Homebrew OpenSSL when present.
 
-\`\`\`bash
+```bash
 git clone https://github.com/Yuvrajbaisoya/secure-email-communication-system.git
 cd secure-email-communication-system
 
@@ -67,7 +67,7 @@ python -m practical.run_labs
 # Cryptographic end-to-end operations using disposable test keys
 bash practical/openpgp_lab.sh
 bash practical/smime_lab.sh
-\`\`\`
+```
 
 **Expected checks:** 37 successful unit tests, 9/9 true integrated lab assertions, and two shell demos printing PASS. The shell scripts delete generated lab keys on exit. The DKIM fixture uses the Python cryptography library and generates a **new** private key in memory; do not commit private key material.
 

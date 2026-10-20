@@ -12,21 +12,21 @@ This is a future deployment playbook, **not a record of changes already made**. 
 
 ## Phase 1 — Sender-domain authentication
 
-- [ ] Query existing SPF: \`dig +short TXT owned-domain.example\`.
+- [ ] Query existing SPF: `dig +short TXT owned-domain.example`.
 - [ ] Publish **one** correctly sized SPF TXT policy for all authorized senders; validate DNS lookup limits and include chains.
 - [ ] Configure DKIM signing **inside the authorized email provider/MTA**; store signing keys in managed secrets, not GitHub.
-- [ ] Publish selector TXT and confirm a real received message has valid \`DKIM-Signature\` plus trusted authentication results.
-- [ ] Publish DMARC \`p=none\` initially and receive aggregate reports in an approved mailbox.
+- [ ] Publish selector TXT and confirm a real received message has valid `DKIM-Signature` plus trusted authentication results.
+- [ ] Publish DMARC `p=none` initially and receive aggregate reports in an approved mailbox.
 - [ ] Evaluate every legitimate sender and required relaxed/strict SPF or DKIM alignment to the Header From domain.
-- [ ] Only after monitoring, pilot \`p=quarantine\` then \`p=reject\` with safe rollback.
+- [ ] Only after monitoring, pilot `p=quarantine` then `p=reject` with safe rollback.
 
 Illustrative placeholders (do **not** deploy literally):
 
-\`\`\`dns
+```dns
 example.test.                      TXT "v=spf1 ip4:192.0.2.10 -all"
 lab._domainkey.example.test.       TXT "v=DKIM1; k=rsa; p=REPLACE_WITH_PROVIDER_PUBLIC_KEY"
 _dmarc.example.test.               TXT "v=DMARC1; p=none; rua=mailto:dmarc-reports@example.test"
-\`\`\`
+```
 
 The toy authentication evaluator in this repo cannot stand in for full SPF/DKIM/DMARC verification.
 
@@ -58,4 +58,4 @@ The toy authentication evaluator in this repo cannot stand in for full SPF/DKIM/
 
 ## Rollback rules
 
-Avoid abrupt DMARC \`p=reject\` changes without monitoring. Restore documented MX and authentication/DLP policies only under authorized change management. Do not log entire message bodies or publish secrets merely to prove that a test ran.
+Avoid abrupt DMARC `p=reject` changes without monitoring. Restore documented MX and authentication/DLP policies only under authorized change management. Do not log entire message bodies or publish secrets merely to prove that a test ran.

@@ -4,13 +4,13 @@ Contributions must be scoped to **synthetic offline fixtures**. Do not submit li
 
 ## Before a change
 
-\`\`\`bash
+```bash
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python -m practical.run_labs
-\`\`\`
+```
 
-If \`gpg\` and OpenSSL 3 are installed, additionally run \`bash practical/openpgp_lab.sh\` and \`bash practical/smime_lab.sh\`.
+If `gpg` and OpenSSL 3 are installed, additionally run `bash practical/openpgp_lab.sh` and `bash practical/smime_lab.sh`.
 
 ## Security-focused review checklist
 

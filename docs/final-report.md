@@ -22,7 +22,7 @@ Key security requirements are confidentiality, integrity, authentication, access
 
 The supplied project describes a hypothetical consulting organization but did not provide live Microsoft 365/Google Workspace tenants, domain/DNS ownership, functioning SMTP gateway or security telemetry. Accordingly, no production scans or configuration changes were attempted. The [infrastructure assessment](infrastructure-assessment.md) is a **baseline plan and risk hypotheses**, not a certified assessment of a real business.
 
-The laboratory uses synthetic addresses at \`example.test\`, documentation IP ranges (\`192.0.2.0/24\`, \`198.51.100.0/24\` and \`2001:db8::/32\`), disposable GnuPG keyrings, self-signed S/MIME certificates and a newly generated ephemeral DKIM RSA key. No real user mail is transmitted.
+The laboratory uses synthetic addresses at `example.test`, documentation IP ranges (`192.0.2.0/24`, `198.51.100.0/24` and `2001:db8::/32`), disposable GnuPG keyrings, self-signed S/MIME certificates and a newly generated ephemeral DKIM RSA key. No real user mail is transmitted.
 
 ## 3. Proposed layered architecture
 
@@ -34,29 +34,29 @@ E2EE and centralized gateway DLP create a visibility trade-off. The proposed res
 
 ### 4.1 OpenPGP
 
-\`practical/openpgp_lab.sh\` creates temporary Alice and Bob keys, signs a synthetic message, encrypts it for Bob, decrypts it, compares plaintext and checks GnuPG signature markers. A macOS GPG agent socket-path problem was corrected, and the user reported an exit-code-0 successful run. The same shell test subsequently passed in GitHub Actions. See [T-PGP-01](../practical/evidence/T-PGP-01/EVIDENCE.md).
+`practical/openpgp_lab.sh` creates temporary Alice and Bob keys, signs a synthetic message, encrypts it for Bob, decrypts it, compares plaintext and checks GnuPG signature markers. A macOS GPG agent socket-path problem was corrected, and the user reported an exit-code-0 successful run. The same shell test subsequently passed in GitHub Actions. See [T-PGP-01](../practical/evidence/T-PGP-01/EVIDENCE.md).
 
 ### 4.2 S/MIME
 
-\`practical/smime_lab.sh\` uses disposable self-signed certificates for Alice and Bob, a signed message and an AES-256-encrypted S/MIME envelope. Verification is performed both before and after recipient decryption. An initial CRLF canonicalization mismatch was repaired; later Mac and CI executions passed. Certificate validity is established only against the explicitly installed test trust anchor, not a publicly recognized certification authority. See [T-SMIME-01](../practical/evidence/T-SMIME-01/EVIDENCE.md).
+`practical/smime_lab.sh` uses disposable self-signed certificates for Alice and Bob, a signed message and an AES-256-encrypted S/MIME envelope. Verification is performed both before and after recipient decryption. An initial CRLF canonicalization mismatch was repaired; later Mac and CI executions passed. Certificate validity is established only against the explicitly installed test trust anchor, not a publicly recognized certification authority. See [T-SMIME-01](../practical/evidence/T-SMIME-01/EVIDENCE.md).
 
 ### 4.3 Hashing and signed-message integrity
 
-\`practical/integrity_demo.py\` and its recorded synthetic fixtures demonstrate how changed content produces a different SHA-256 digest. Hashing is a detection primitive and **cannot on its own prove who sent an email**; user-level signatures add signer-key verification, and DKIM supplies different domain-level authentication.
+`practical/integrity_demo.py` and its recorded synthetic fixtures demonstrate how changed content produces a different SHA-256 digest. Hashing is a detection primitive and **cannot on its own prove who sent an email**; user-level signatures add signer-key verification, and DKIM supplies different domain-level authentication.
 
 ### 4.4 SPF / DKIM / DMARC
 
-\`secure_email_lab/authentication.py\` implements a **deliberately restricted offline SPF evaluator** for \`ip4\`, \`ip6\` and \`all\` and a DMARC alignment/policy decision model with an explicitly supplied organizational domain. It covers authorized/unauthorized senders, alignment alternatives, strict vs relaxed matching and staged dispositions. Unsupported SPF mechanisms raise explicit errors.
+`secure_email_lab/authentication.py` implements a **deliberately restricted offline SPF evaluator** for `ip4`, `ip6` and `all` and a DMARC alignment/policy decision model with an explicitly supplied organizational domain. It covers authorized/unauthorized senders, alignment alternatives, strict vs relaxed matching and staged dispositions. Unsupported SPF mechanisms raise explicit errors.
 
-\`secure_email_lab/dkim_lab.py\` uses genuine RSA-SHA256 signing and verification. Selected headers and the body undergo a bounded relaxed canonicalization scheme; changing signed headers or the message body invalidates the signature. This educational fixture is **not a full RFC 6376 parser**, nor does it publish selectors or verify DNS in live mail. See [T-AUTH-01](../practical/evidence/T-AUTH-01/EVIDENCE.md).
+`secure_email_lab/dkim_lab.py` uses genuine RSA-SHA256 signing and verification. Selected headers and the body undergo a bounded relaxed canonicalization scheme; changing signed headers or the message body invalidates the signature. This educational fixture is **not a full RFC 6376 parser**, nor does it publish selectors or verify DNS in live mail. See [T-AUTH-01](../practical/evidence/T-AUTH-01/EVIDENCE.md).
 
 ### 4.5 MFA
 
-\`secure_email_lab/mfa.py\` demonstrates RFC 6238 TOTP with PBKDF2 password checking, per-account lockout after repeated failures, replay prevention and explicit negative tests (wrong password, expired code, reused code). Successful test logins are local simulation results, **not an assertion that any real mailbox requires MFA**. Production rollout should favor phishing-resistant passkeys or FIDO2 authenticators wherever possible. See [T-MFA-01](../practical/evidence/T-MFA-01/EVIDENCE.md).
+`secure_email_lab/mfa.py` demonstrates RFC 6238 TOTP with PBKDF2 password checking, per-account lockout after repeated failures, replay prevention and explicit negative tests (wrong password, expired code, reused code). Successful test logins are local simulation results, **not an assertion that any real mailbox requires MFA**. Production rollout should favor phishing-resistant passkeys or FIDO2 authenticators wherever possible. See [T-MFA-01](../practical/evidence/T-MFA-01/EVIDENCE.md).
 
 ### 4.6 Gateway and DLP
 
-\`secure_email_lab/gateway.py\` parses small synthetic MIME messages and applies policy to risky attachment filename extensions, a specific synthetic phishing marker, independently supplied DMARC disposition, and synthetic outbound secret markers. Suspected data leakage to an external destination is blocked; opaque encrypted outbound MIME causes a review action rather than a false claim of inspection. The audit output includes only a message SHA-256 fingerprint, action and policy reasons, not the sensitive body.
+`secure_email_lab/gateway.py` parses small synthetic MIME messages and applies policy to risky attachment filename extensions, a specific synthetic phishing marker, independently supplied DMARC disposition, and synthetic outbound secret markers. Suspected data leakage to an external destination is blocked; opaque encrypted outbound MIME causes a review action rather than a false claim of inspection. The audit output includes only a message SHA-256 fingerprint, action and policy reasons, not the sensitive body.
 
 **Limitations:** The emulator cannot recognize arbitrary malware or real phishing, scan PDFs, evaluate URL reputation, prevent MIME evasions in production, or deliver/quarantine actual SMTP traffic. See [T-SEG-DLP-01](../practical/evidence/T-SEG-DLP-01/EVIDENCE.md).
 

@@ -2,17 +2,17 @@
 
 ## What this repository actually implements
 
-The [gateway policy emulator](../secure_email_lab/gateway.py) runs entirely offline: it parses synthetic email bytes and returns \`allow\`, \`quarantine\` or \`block\` with coded policy reasons and a SHA-256 fingerprint. No email is delivered and the code is **not** an SMTP gateway, antivirus, sandbox, phishing classifier, reputation engine or enterprise DLP product.
+The [gateway policy emulator](../secure_email_lab/gateway.py) runs entirely offline: it parses synthetic email bytes and returns `allow`, `quarantine` or `block` with coded policy reasons and a SHA-256 fingerprint. No email is delivered and the code is **not** an SMTP gateway, antivirus, sandbox, phishing classifier, reputation engine or enterprise DLP product.
 
 ### Policy matrix used by the lab
 
 | Signal | Direction | Test action | Reason |
 |---|---|---|---|
 | Normal sample message | Inbound | Allow | No flagged lab indicator |
-| \`X-SIMULATED-PHISHING\` in subject | Inbound | Quarantine | Synthetic phishing marker |
-| \`.exe\`, \`.js\`, \`.scr\` and similar attachment filename | Inbound | Quarantine | Risky filename extension |
+| `X-SIMULATED-PHISHING` in subject | Inbound | Quarantine | Synthetic phishing marker |
+| `.exe`, `.js`, `.scr` and similar attachment filename | Inbound | Quarantine | Risky filename extension |
 | Trusted independently supplied DMARC rejection | Inbound | Quarantine | Receiver authentication policy |
-| \`CONFIDENTIAL-DEMO-12345\` to outside \`example.test\` | Outbound | Block | Synthetic external DLP marker |
+| `CONFIDENTIAL-DEMO-12345` to outside `example.test` | Outbound | Block | Synthetic external DLP marker |
 | The same synthetic marker to internal test recipient | Outbound | Allow | Deliberately scoped external-disclosure rule |
 | Opaque S/MIME/PGP MIME content to outside domain | Outbound | Quarantine | Body cannot be inspected |
 | Oversized sample (>256 KiB) | Either | Quarantine | Offline parser size limit |
@@ -21,10 +21,10 @@ The [gateway policy emulator](../secure_email_lab/gateway.py) runs entirely offl
 
 ### Reproduce
 
-\`\`\`bash
+```bash
 python -m unittest tests.test_gateway -v
 python -m practical.run_labs
-\`\`\`
+```
 
 Observed result: [CI PASS, security suite](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933); see [gateway/DLP evidence](../practical/evidence/T-SEG-DLP-01/EVIDENCE.md).
 

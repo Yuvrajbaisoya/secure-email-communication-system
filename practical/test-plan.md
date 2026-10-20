@@ -27,13 +27,13 @@
 
 ## Reproduction
 
-\`\`\`bash
+```bash
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python -m practical.run_labs
 bash practical/openpgp_lab.sh
 bash practical/smime_lab.sh
-\`\`\`
+```
 
 ## Evidence quality rules
 

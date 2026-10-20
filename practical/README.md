@@ -11,8 +11,8 @@ These are not third-party mail service tests and do not prove production enforce
 
 ## Requirements
 
-- Python 3.12+ and \`python -m pip install -r requirements.txt\`
-- GnuPG 2.x (\`gpg\`, \`gpgconf\`) for OpenPGP
+- Python 3.12+ and `python -m pip install -r requirements.txt`
+- GnuPG 2.x (`gpg`, `gpgconf`) for OpenPGP
 - OpenSSL 3.x for S/MIME
 - All fixtures use reserved domains, reserved IP blocks and disposable synthetic data.
 
@@ -20,12 +20,12 @@ These are not third-party mail service tests and do not prove production enforce
 
 From repository root:
 
-\`\`\`bash
+```bash
 python -m unittest discover -s tests -v
 python -m practical.run_labs
 bash practical/openpgp_lab.sh
 bash practical/smime_lab.sh
-\`\`\`
+```
 
 OpenPGP uses a short isolated temporary GnuPG home because GPG agent socket paths can be too long on macOS. S/MIME chooses Homebrew OpenSSL 3 if installed. Both shell scripts delete disposable credentials when they exit.
 
@@ -41,7 +41,7 @@ OpenPGP uses a short isolated temporary GnuPG home because GPG agent socket path
 
 ## Important limitations
 
-- SPF is a **bounded** IPv4/IPv6 and \`all\` mechanism evaluator; it does not make DNS lookups or implement \`include\`, \`redirect\`, HELO checks or RFC lookup limits.
+- SPF is a **bounded** IPv4/IPv6 and `all` mechanism evaluator; it does not make DNS lookups or implement `include`, `redirect`, HELO checks or RFC lookup limits.
 - The DKIM fixture generates real RSA-SHA256 signatures for fixed-format, single-signer ASCII test messages; **it is not a full DKIM receiver** and doesn't query selector DNS.
 - DMARC uses an **explicit organizational-domain value** to avoid pretending to implement public suffix discovery; it does not process aggregate reports or ARC.
 - MFA is an in-memory TOTP demo, **not deployed MFA** on an email account. Passkeys/security keys should be preferred in actual providers.
