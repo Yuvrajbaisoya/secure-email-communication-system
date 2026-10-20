@@ -29,6 +29,10 @@ bash practical/smime_lab.sh
 
 OpenPGP uses a short isolated temporary GnuPG home because GPG agent socket paths can be too long on macOS. S/MIME chooses Homebrew OpenSSL 3 if installed. Both shell scripts delete disposable credentials when they exit.
 
+## User-provided local screenshots
+
+The project owner supplied four Mac terminal screenshots showing 37/37 unit tests, 9/9 integrated checks, OpenPGP tamper rejection and S/MIME signing/encryption. Their visible output is faithfully documented in the [user screenshot evidence transcript](evidence/USER-SCREENSHOTS-2026-10-20/EVIDENCE.md). **The original PNG image files are not yet in the GitHub repository.**
+
 ## Evidence register
 
 - [T-HASH-01 — SHA-256 fixture](evidence/T-HASH-01/EVIDENCE.md)
