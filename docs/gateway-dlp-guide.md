@@ -1,36 +1,43 @@
-# Secure Email Gateway and DLP Configuration Guide
+# Secure Email Gateway and Data Loss Prevention Guide
 
-## Deployment model
-Choose provider-native protection for managed production mail, or a separate authorized test gateway (e.g. Proxmox Mail Gateway) for lab evaluation. Never change a third-party MX record or intercept others' email.
+## What this repository actually implements
 
-## Lab prerequisites
-- Isolated VM/network and two test mailboxes
-- Mail relay with outbound restrictions to avoid accidental external delivery
-- Admin access to lab DNS/MTA, TLS certificates and logging
-- Current security patches and resource limits
+The [gateway policy emulator](../secure_email_lab/gateway.py) runs entirely offline: it parses synthetic email bytes and returns \`allow\`, \`quarantine\` or \`block\` with coded policy reasons and a SHA-256 fingerprint. No email is delivered and the code is **not** an SMTP gateway, antivirus, sandbox, phishing classifier, reputation engine or enterprise DLP product.
 
-## Configuration procedure
-1. Document topology and baseline SMTP flow with dummy mail.
-2. Route test inbound SMTP through the gateway; restrict accepted recipients and relaying.
-3. Enable anti-spam scoring, URL reputation checks, attachment policies and antivirus scanning with updated signatures.
-4. Configure quarantine and release permissions; monitor false positives.
-5. Set inbound rate limits and logging with minimal retention of message content.
-6. Test using benign spam patterns and the standard harmless EICAR antivirus test file **only in an authorized isolated environment**.
-7. Integrate with a DLP engine or provider-native DLP; define a rule for a synthetic marker such as `CONFIDENTIAL-DEMO-12345`.
-8. Send dummy outbound mail with and without the marker. Verify that policy blocks/quarantines the marked message and permits the clean message.
-9. Record gateway version, configuration screenshots, redacted logs, false positives and rollback plan.
+### Policy matrix used by the lab
 
-## Example policy matrix
-| Signal | Action | Escalation |
-|---|---|---|
-| Known malware attachment | Reject/quarantine | Alert security |
-| High-confidence phishing | Quarantine | Security review |
-| Spam score above threshold | Junk/quarantine | User release workflow |
-| Synthetic DLP marker | Block and log | Notify test administrator |
-| Encrypted outbound content | Require endpoint classification | Review exceptions |
+| Signal | Direction | Test action | Reason |
+|---|---|---|---|
+| Normal sample message | Inbound | Allow | No flagged lab indicator |
+| \`X-SIMULATED-PHISHING\` in subject | Inbound | Quarantine | Synthetic phishing marker |
+| \`.exe\`, \`.js\`, \`.scr\` and similar attachment filename | Inbound | Quarantine | Risky filename extension |
+| Trusted independently supplied DMARC rejection | Inbound | Quarantine | Receiver authentication policy |
+| \`CONFIDENTIAL-DEMO-12345\` to outside \`example.test\` | Outbound | Block | Synthetic external DLP marker |
+| The same synthetic marker to internal test recipient | Outbound | Allow | Deliberately scoped external-disclosure rule |
+| Opaque S/MIME/PGP MIME content to outside domain | Outbound | Quarantine | Body cannot be inspected |
+| Oversized sample (>256 KiB) | Either | Quarantine | Offline parser size limit |
 
-## DLP and E2EE limitation
-A gateway cannot reliably inspect end-to-end encrypted message bodies. Apply DLP before encryption in managed clients/endpoints or use approved metadata policies. Do not silently decrypt private communications.
+**Careful:** Extension checks and subject markers are **toy policies**, not malware/phishing detection. Real gateways require updated threat feeds, content-type/magic-byte analysis, decoding and evasions defense, sender reputation, quarantine workflows and continuous monitoring.
 
-## Acceptance tests
-Log test ID, policy, synthetic message, expected action, actual action, timestamp and screenshot. Keep all results **Pending** until performed.
+### Reproduce
+
+\`\`\`bash
+python -m unittest tests.test_gateway -v
+python -m practical.run_labs
+\`\`\`
+
+Observed result: [CI PASS, security suite](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933); see [gateway/DLP evidence](../practical/evidence/T-SEG-DLP-01/EVIDENCE.md).
+
+## Production evaluation design (not deployed)
+
+1. Choose an authorized mail tenant or isolated lab MTA with outbound relay restrictions.
+2. Enable vendor anti-spam, attachment/malware protection, URL inspection, SPF/DKIM/DMARC validation, and operator alerts.
+3. Start quarantine policy monitoring with deliberately harmless synthetic messages, measure false positives, and restrict who may release mail.
+4. Set DLP classifications, destination scopes and exception workflows before enabling blocks.
+5. Inspect outgoing plaintext **before E2EE** on approved endpoints; otherwise treat encrypted content as opaque.
+6. Limit event logs to justified metadata, redacted snippets where lawful, reason codes, and retention periods.
+7. Test safe rollback, reporting, suspicious-message triage and recovery with signed-off owners.
+
+## Out of scope / risks
+
+The lab does not unpack archives, scan embedded links for reputation, check real confidential data, read encrypted message bodies, evaluate anti-malware signatures, implement active SMTP quarantine or enforce organizational policy. Never use it to filter real mail. See [deployment checklist](deployment-checklist.md) for verification tasks.

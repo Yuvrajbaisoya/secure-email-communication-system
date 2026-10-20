@@ -1,34 +1,42 @@
-# Practical Test Plan and Evidence Register
+# Evidence Register and Test Plan
 
-All work is performed against accounts, domains and infrastructure owned or explicitly authorized for this project. **Do not claim an implementation is complete until the test is performed.**
+**Snapshot:** 20 October 2026  
+**Independent CI evidence:** [Offline email security labs — 37/37 tests, 9/9 integrated checks, two crypto demos PASS](https://github.com/Yuvrajbaisoya/secure-email-communication-system/actions/runs/39389041933)  
+**Scope:** Synthetic, offline and authorized GitHub CI execution only.
 
-| ID | Practical | Expected evidence | Status |
-|---|---|---|---|
-| T01 | OpenPGP key generation and public-key exchange | Redacted key fingerprints | Pending |
-| T02 | OpenPGP encrypted message and decryption | Sender/recipient screenshots with dummy content | Pending |
-| T03 | OpenPGP signed message and tamper verification | Valid and invalid signature results | Pending |
-| T04 | S/MIME signing and encryption | Test certificates and verification screenshots | Pending |
-| T05 | SPF validation | TXT lookup and receiver authentication result | Pending |
-| T06 | DKIM signing validation | DKIM-Signature header and validation result | Pending |
-| T07 | DMARC alignment | Policy DNS lookup and aggregate/report example | Pending |
-| T08 | MFA enforcement | Redacted account security screenshot | Pending |
-| T09 | Gateway spam/malware filtering | Safe test fixtures, policy and log | Pending |
-| T10 | DLP synthetic data blocking | Dummy sensitive-data sample and blocked-event log | Pending |
+| ID | Control / expected behavior | Evidence | Lab result | Live deployment |
+|---|---|---|---|---|
+| T-HASH-01 | Modified sample message produces different SHA-256 | [Hash fixture report](evidence/T-HASH-01/EVIDENCE.md) | PASS (synthetic file test) | N/A |
+| T01 | Disposable OpenPGP signing/encryption key generation | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS | Not deployed |
+| T02 | OpenPGP encrypted message roundtrip | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS | Not deployed |
+| T03 | OpenPGP signature verifies | [T-PGP-01](evidence/T-PGP-01/EVIDENCE.md) | PASS for valid signature; deliberate tamper/revocation test remains open | Not deployed |
+| T04 | S/MIME signing, encrypting, verifying and decrypting | [T-SMIME-01](evidence/T-SMIME-01/EVIDENCE.md) | PASS | Not deployed |
+| T05 | SPF permitted/denied test-sender IP | [T-AUTH-01](evidence/T-AUTH-01/EVIDENCE.md) | PASS in bounded offline evaluator | No actual DNS |
+| T06 | DKIM RSA signature checks; tampered header/body rejected | [T-AUTH-01](evidence/T-AUTH-01/EVIDENCE.md) | PASS in fixed-format lab | No actual DNS/MTA |
+| T07 | DMARC alignment and staged reject/quarantine/none outcomes | [T-AUTH-01](evidence/T-AUTH-01/EVIDENCE.md) | PASS in offline evaluator | No actual DMARC reports |
+| T08 | Password plus TOTP, wrong/replayed/expired OTP and lockout | [T-MFA-01](evidence/T-MFA-01/EVIDENCE.md) | PASS in in-memory demo | No provider enforcement |
+| T09 | Synthetic suspicious mail and risky filename quarantined | [T-SEG-DLP-01](evidence/T-SEG-DLP-01/EVIDENCE.md) | PASS in policy emulator | No deployed SEG or malware scanner |
+| T10 | Synthetic marker on external mail blocked; encrypted mail reviewed | [T-SEG-DLP-01](evidence/T-SEG-DLP-01/EVIDENCE.md) | PASS in policy emulator | No deployed DLP |
 
-## Test record template
-- Test ID and date:
-- Environment and software versions:
-- Preconditions:
-- Steps performed:
-- Expected outcome:
-- Actual outcome:
-- Result: PASS / FAIL / BLOCKED
-- Evidence path (redacted):
-- Remediation / limitations:
+## Result conventions
 
-## Important technical distinctions
-- TLS protects a connection/hop; it is not end-to-end email encryption.
-- SPF/DKIM/DMARC authenticate domains and message handling; they do not establish the human sender's identity.
-- Digital signatures provide integrity and cryptographic signer verification, subject to key/certificate trust.
-- Hashing alone does not authenticate a message; use signatures or a keyed MAC.
-- End-to-end encrypted message bodies cannot ordinarily be inspected by a gateway for DLP without endpoint-side controls or decryption.
+- **PASS — lab:** Test was actually executed in a synthetic fixture or CI runner and assertions passed.
+- **BLOCKED / not deployed:** Needs owned domain, production-like identity/mail platform, consent, or infrastructure that was not supplied.
+- **PASS — production:** Requires separate implementation evidence; **none is claimed here**.
+- **NOT TESTED:** Work not demonstrated (e.g., real email deliveries, live TLS, monitoring operations, and OpenPGP key revocation).
+
+## Reproduction
+
+\`\`\`bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python -m practical.run_labs
+bash practical/openpgp_lab.sh
+bash practical/smime_lab.sh
+\`\`\`
+
+## Evidence quality rules
+
+For each later real-world pilot test, record date/time, owner, domain authorization, software versions, setup, commands, observed pass/fail, sanitized screenshots or logs, remediation, rollback and residual risk. Never upload real account credentials, certificate private keys, MFA secrets, client content, or unmanaged samples.
+
+See [deployment checklist](../docs/deployment-checklist.md) for all controls not yet validated on actual services.
